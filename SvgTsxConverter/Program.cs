@@ -28,27 +28,38 @@ class Program
         Directory.CreateDirectory("input");
         Directory.CreateDirectory("output");
 
-        //Load the template
-        template = File.ReadAllText(TEMPLATE_PATH);
-
-        //Get the svg files
-        var files = Directory.GetFiles("./input", "*.svg");
-
-        if (files.Length > 0)
+        try
         {
-            foreach (var file in files)
+            //Load the template
+            if (!File.Exists(TEMPLATE_PATH))
             {
-                CreateTSX(file);
+                throw new Exception("No template.tsx file found in ./config");
             }
+            template = File.ReadAllText(TEMPLATE_PATH);
 
-            if (filenames.Count > 0)
+            //Get the svg files
+            var files = Directory.GetFiles("./input", "*.svg");
+
+            if (files.Length > 0)
             {
-                GenerateIndex();
+                foreach (var file in files)
+                {
+                    CreateTSX(file);
+                }
+
+                if (filenames.Count > 0)
+                {
+                    GenerateIndex();
+                }
+            }
+            else
+            {
+                throw new Exception("No SVG file found");
             }
         }
-        else
+        catch (Exception e)
         {
-            Console.WriteLine("No SVG file found");
+            Console.WriteLine(e.Message);
         }
 
         Console.WriteLine("\nPress any key to close...");
@@ -143,7 +154,7 @@ class Program
 
         //Add the SVG content
         string objContent = "";
-        objContent = "\tcontent: [\n";
+        objContent = "\tcontent: \"";
         foreach (var tag in tags)
         {
             if (tag.Contains("svg") || string.IsNullOrEmpty(tag) || string.IsNullOrWhiteSpace(tag))
@@ -151,12 +162,20 @@ class Program
                 continue;
             }
 
-            string fTag = tag.Replace('"', '\'').Replace("\n", "").Replace("\r", "").Replace("\t", "");
-            fTag = fTag.Replace("  ", "");
+            //Clean the tag
+            string fTag = tag.Replace('"', '\'').Replace("\n", "").Replace("\r", "").Replace("\t", "").Trim();
+            fTag = fTag.Replace("  ", "") + ">";
 
-            objContent += $"\t\t\"{fTag}>\",\n";
+            //Manage the self closing tags for compatibility
+            if (fTag.Contains("/>"))
+            {
+                string tagName = fTag.Split(' ')[0].Replace("<", "");
+                fTag = fTag.Replace("/>", $"></{tagName}>");
+            }
+
+            objContent += $"{fTag}";
         }
-        objContent += "\n\t]";
+        objContent += "\"";
 
         //Write on the template
         obj = obj.Replace("[PROPS]", objProps);

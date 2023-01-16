@@ -10,7 +10,7 @@ There is also a *template.tsx* file in the "config" folder. It is used by the co
 ## Usage
 
 - Put your *.svg* files in the "input" folder.
-- Run the SVGTSXConverter_V2.0 executable.
+- Run the SvgTsxConverter file.
 - After the conversion is done, each *.tsx* file will be found in the "output" folder.
 - The converter also generates a *[timestamp]_index.js* file. It contains imports and exports for the new components and is useful for a quick copy-paste if you wish to create a folder with an index.js file.
 

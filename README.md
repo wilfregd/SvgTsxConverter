@@ -1,4 +1,4 @@
-# SVG to TSX Converter (Version 2.0)
+# SVG to TSX Converter
 Tool created by **Corentin Sakwinski (WilfreGD)**, made with .NET 6.0
 
 Use it to convert *.svg* images into ready-to-use *.tsx* objects. This allows icons to be converted for easier use into React. Feel free to edit this tool to fit your needs. But keep in mind that it was created for my **personal** use (hence why I kept it very simple), which means it might require your own implementation of a component. It was made for icons and was **NOT** tested with other types of svgs.
